@@ -1,0 +1,69 @@
+1.
+package compilers_1;
+
+
+import java.util.*;
+public class label {
+	public static void main(String[] args) 
+	{ 
+		String S = new String();
+		Scanner t = new Scanner (System.in);
+		S = t.nextLine();
+		String[] w = S.split(" ");
+		for(int i=0;i<w.length;i++) {
+			System.out.print(w[i] + " ");
+			if(w[i].equals("main") || w[i].equals("var") ) {
+				System.out.println("Keyword");
+			}
+			else if(w[i].equals( "{")){
+				System.out.println(" Left curly braces");
+			}
+			else if(w[i].equals("}")){
+				System.out.println(" Right curly braces");
+			}
+			else if(w[i].equals("integer") || w[i].equals ("char") || w[i].equals ("string") || w[i].equals ("float") ) {
+				System.out.println("Datatypers");
+			}
+			else if(w[i].equals ("(")){
+				System.out.println(" Left paranthesis");
+			}
+			else if(w[i].equals (")")){
+				System.out.println(" Right paranthesis");
+			}
+			else if(w[i].equals("+") || w[i].equals ("-") || w[i].equals ("*") || w[i].equals ("/")  || w[i].equals("%")) {
+				System.out.println(" Arithmetic operators	");
+			}
+			else if(w[i].equals("||") || w[i].equals ("&&") || w[i].equals ("!==") ) {
+				System.out.println("Logical operators	");
+			}
+			else if(w[i].equals ("=")){
+				System.out.println(" Assignment operator");
+			}
+			else if(w[i].equals("input") ) {
+				System.out.println("input function	");
+			}
+			else if(w[i].equals("output") ) {
+				System.out.println("output function	");
+			}
+			else {
+			int co=0;
+			for(int j=0;j<w[i].length();j++) {
+			int te= (int) w[i].charAt(j);
+			if((te>=65&&te<=90)||(te>=97&&te<=122)&&j==0) {
+			co++;
+			}
+			else {
+			if(((te>=65&&te<=90)||(te>=97||te<=122) || (te>=48||te<=57)) && j>0) {
+			co++;
+			}
+			}
+
+			}
+			if(co==w[i].length()) {
+			System.out.println("Identifiers");
+			}
+		}}
+	}  
+}
+
+
