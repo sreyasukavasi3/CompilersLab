@@ -1,1 +1,54 @@
+CUP File
+import java_cup.runtime.*; 
+scan with {: return getScanner().next_token(); :};
+terminal INT,STRING,SEMI,COMMA,ID, SPACE, CONST, EOFILE,FLOAT,CHAR,NEWLINE,ASSIGN, VAR,NULL, RSQB, LSQB,IF,LPAR,RPAR,LCUR,RCUR,COMP;
+non terminal prog, stmt, decln, varlist, type, s,condition,ifstatement;
+s::=prog {: System.out.println("Valid declaration");System.exit(0); :} EOFILE{:System.exit(0);:} ;
+prog::=prog stmt |stmt ;
+stmt::=decln | NEWLINE | ifstatement;
+decln::=type SPACE varlist SEMI | VAR SPACE decln | CONST SPACE decln;
+type::=INT | STRING | CHAR | FLOAT | NULL;
+varlist::=ID COMMA varlist | ID | ID ASSIGN type | ID LSQB INT RSQB;
+ifstatement::=IF SPACE LPAR condition RPAR SPACE LCUR stmt RCUR; 
+condition::=ID COMP ID;
 
+
+JLEX File
+import java_cup.runtime.Symbol; 
+import java_cup.runtime.Scanner; 
+%% 
+%cup
+%eofval{ 
+return new Symbol(sym.EOFILE);
+%eofval}
+%% 
+";"  {System.out.println("LA "+yytext());return new Symbol(sym.SEMI);} 
+"const" {System.out.println("LA "+yytext());return new Symbol(sym.CONST);} 
+"[" {System.out.println("LA "+yytext());return new Symbol(sym.LSQB);} 
+"]" {System.out.println("LA "+yytext());return new Symbol(sym.RSQB);} 
+"(" {System.out.println("LA "+yytext());return new Symbol(sym.LPAR);} 
+")" {System.out.println("LA "+yytext());return new Symbol(sym.RPAR);}
+"{" {System.out.println("LA "+yytext());return new Symbol(sym.LCUR);} 
+"}" {System.out.println("LA "+yytext());return new Symbol(sym.RCUR);}
+"NULL" {System.out.println("LA "+yytext());return new Symbol(sym.NULL);} 
+"if" {System.out.println("LA "+yytext());return new Symbol(sym.IF);} 
+"var" {System.out.println("LA "+yytext());return new Symbol(sym.VAR);} 
+","  {System.out.println("LA "+yytext());return new Symbol(sym.COMMA);} 
+"<"  {System.out.println("LA "+yytext());return new Symbol(sym.COMP);} 
+">"  {System.out.println("LA "+yytext());return new Symbol(sym.COMP);} 
+"=="  {System.out.println("LA "+yytext());return new Symbol(sym.COMP);}  
+">="  {System.out.println("LA "+yytext());return new Symbol(sym.COMP);} 
+"<="  {System.out.println("LA "+yytext());return new Symbol(sym.COMP);} 
+"!="  {System.out.println("LA "+yytext());return new Symbol(sym.COMP);} 
+"="  {System.out.println("LA "+yytext());return new Symbol(sym.ASSIGN);} 
+" "  {System.out.println("LA "+yytext());return new Symbol(sym.SPACE);} 
+[<>!] {System.out.println("LA "+yytext());return new Symbol(sym.COMP);}
+[0-9]*\.[0-9]+ {System.out.println("LA "+yytext());return new Symbol(sym.FLOAT,new Float(yytext()));} 
+[0-9]+ {System.out.println("LA "+yytext());return new Symbol(sym.INT,new Integer(yytext()));}
+"int" {System.out.println("LA "+yytext());return new Symbol(sym.INT);}
+"float" {System.out.println("LA "+yytext());return new Symbol(sym.FLOAT);}
+"char" {System.out.println("LA "+yytext());return new Symbol(sym.CHAR);}
+"string" {System.out.println("LA "+yytext());return new Symbol(sym.STRING);}
+[\"][a-z][a-z0-9]*[\"] {System.out.println("LA "+yytext());return new Symbol(sym.STRING);}
+[a-z][a-z0-9]* {System.out.println("LA "+yytext());return new Symbol(sym.ID,new String(yytext()));} 
+[\n] {System.out.println("LA"+ "EOF");return new Symbol(sym.NEWLINE);} 
