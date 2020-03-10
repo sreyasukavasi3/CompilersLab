@@ -1,1 +1,54 @@
+JLEX File
+import java_cup.runtime.Symbol;
+import java_cup.runtime.Scanner;
+%%
+%cup
+%eofval{
+return new Symbol(sym.EOFILE);
+%eofval}
+%%
+[\n] {System.out.println("NL "+yytext());return new Symbol(sym.NL);}
+";" {System.out.println("LA "+yytext());return new Symbol(sym.SEMI);}
+"," {System.out.println("LA "+yytext());return new Symbol(sym.COMMA);}
+"=" {System.out.println("EQ "+yytext());return new Symbol(sym.EQ);}
+" " {System.out.println("LA "+yytext());return new Symbol(sym.SPACE);}
+"int" {System.out.println("LA "+yytext());return new Symbol(sym.INT);}
+[0-9]+ {System.out.println("LA "+yytext());return new Symbol(sym.NUM ,new Integer(yytext()));}
+[a-zA-Z]+ {System.out.println("LA" + yytext()); return  new Symbol(sym.ID , new String(yytext()));}
 
+CUP FILE
+import java_cup.runtime.*;
+import java.util.*;
+
+init with {: :};
+
+action code {: Map<String,String> hash = new HashMap<String,String>(); :};
+
+scan with {: return getScanner().next_token(); :};
+terminal INT,STRING,COMMA,ID, SPACE, EOFILE,NL,EQ,QUOTE,STR,NIL,VAR,FLOAT,DECIMAL,SEMI,NUM;
+non terminal prog, stmt, decln, s,val, defn, assn;
+s ::= prog {: System.out.println("Completed Parsing");System.exit(0); :} EOFILE {:System.exit(0);:} ;
+prog ::= prog stmt|stmt;
+stmt ::= decln
+	|SPACE
+	|NL
+	|assn;
+decln ::= 	 INT SPACE ID:e SEMI {: 
+					if(hash.get(e)==null)
+						{
+						System.out.println("Valid Declaration, Adding INT to HashMap");
+						hash.put(e.toString(),"INT");
+						}
+					else{
+						System.out.println("Error : Dupicate Declaration");					
+						}
+					  :};
+assn ::=        ID:e SPACE EQ SPACE NUM SEMI {:
+						  if(hash.get(e) == null)
+						{
+						System.out.println("Error: Variable not delcared");
+						}
+						  else{
+						System.out.println("valid statement");
+						}
+					  :};
